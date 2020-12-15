@@ -1,29 +1,38 @@
 <FlatButton@ButtonBehavior+Label>:
 	font_size: 16
 
+<FullImage>:
+	on_size: self.center = win.Window.center
+	size: image.size
+	size_hint: None, None
+
+	Image:
+		canvas:
+		    source: 'backgr.png'
+		    Color:
+		        rgb: (1, 1, 1)
+		    Rectangle:
+		        texture: self.texture
+		        size: self.width + 20, self.height + 20
+		        pos: self.x - 10, self.y - 10
+
 <SigninWindow>:
 	id: main_win
 	orientation: "vertical"
 	spacing: 10
-	space_x: self.size[0]/2.5
-	canvas.before:
-		Color:
-			rgba: (.85,.85,.85, 1)
-		Rectangle:
-			size: self.size
-			pos: self.pos
+	space_x: self.size[0]/3	   	
 
 	BoxLayout:
 		size_hint_y: None
 		height: 50
 		canvas.before:
 			Color:
-				rgba: (.30, .18, .51, 1)
+				rgba: (.06, .45, .45, 1)
 			Rectangle:
 				size: self.size
 				pos: self.pos 	 
 		Label:
-			text: "IAU"
+			text: "Access Control"
 			bold: True 
 			size_hint_x: .9	
 		Button:
@@ -52,7 +61,7 @@
 			text: "Sign In"
 			size_hint_y: None
 			height: 40
-			background_color: (.30, .18, .51, 1)
+			background_color: (.06,.45,.45, 1)
 			background_normal: ''
 		Label:
 			id: sp2 
