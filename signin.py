@@ -23,9 +23,6 @@ class SigninWindow(BoxLayout):
 			if uname == 'admin' and passw == 'admin':
 				print ('Logged In successfully!!!')
 
-class FullImage(Image):
-	def build(self):
-		return Image(source='img.jpg')
 
 class SigninApp(App):
 	def build(self):
