@@ -1,9 +1,5 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
-from kivy.core.image import Image
-from kivy.core.window import Window
-
-Window.size=(360,640)
 
 class SigninWindow(BoxLayout):
 	def __init__(self, **kwargs):
@@ -18,11 +14,12 @@ class SigninWindow(BoxLayout):
 		passw = pwd.text
 
 		if uname == "" or passw == '':
-			info.text ='[color=#FF0000]username and/ or password required'
+			info.text ='[color=#FF0000]username or password required[/color]'
 		else:
 			if uname == 'admin' and passw == 'admin':
-				print ('Logged In successfully!!!')
-
+				info.text = '[color=#00FF00]Logged In successfully!!![/color]'
+			else:
+				info.text = '[color=#FF0000]Incorrect username or password[/color]'
 
 class SigninApp(App):
 	def build(self):
