@@ -28,33 +28,6 @@
             color: (1,1,1,1)
 
     BoxLayout:
-        id: current
-        size_hint_y: None
-        height: 50
-        canvas.before:
-            Color:
-                rgba: (1,1,1, 1)
-            Rectangle:
-                size: self.size
-                pos: self.pos
-        Button:
-            text: 'Current Item:'
-            background_normal: ''
-            background_color: (.06, .32, .32, 1)
-            size_hint_x: .4
-        Button:
-            id: cur_product
-            text: 'Default Product'
-            background_normal: ''
-            background_color: (.06, .4, .4, 1)
-        Button: 
-            id: cur_price
-            text: '0.00'
-            background_normal: ''
-            background_color: (.06, .65, .65, 1)
-            size_hint_x: .2
-
-    BoxLayout:
         padding: 10
         BoxLayout:
             id: product_details
