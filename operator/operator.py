@@ -1,90 +1,149 @@
-from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
+<FlatButton@ButtonBehavior+Label>:
+    font_size: 14
 
-import re
-from pymongo import MongoClient
+<OperatorWindow>:
+    id: main_win
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgba: (1,1,1, 1)
+        Rectangle:
+            size: self.size
+            pos: self.pos
 
-class OperatorWindow(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        client = MongoClient()
-        self.db = client.silverpos
-        self.stocks = self.db.stocks
+    BoxLayout:
+        id: header
+        size_hint_y: None
+        height: 40
+        canvas.before:
+            Color:
+                rgba: (.06, .45, .45, 1)
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        Label:
+            text: 'Home Works Managing System'
+            size_hint_x: 1
+            bold: True
+            color: (1,1,1,1)
 
-        self.cart = []
-        self.qty = []
-        self.total = 0.00
+    BoxLayout:
+        padding: 10
+        BoxLayout:
+            id: product_details
+            orientation: "vertical"
+            size_hint_x: .8
+            spacing: 10
 
-    def update_purchases(self):
-        pcode = self.ids.subj_inp.text
-        hw_list_cont = self.ids.hw_list
+            BoxLayout:
+                id: product_labels
+                size_hint_y: None
+                height: 40
+                canvas.before:
+                    Color:
+                        rgba: (.06,.45,.45, 1)
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                    
+                FlatButton:
+                    text: 'No.'
+                    size_hint_x: .05
+                FlatButton:
+                    text: 'Subject'
+                    size_hint_x: .2
+                FlatButton:
+                    text: 'HW'
+                    size_hint_x: .45
+                FlatButton:
+                    text: 'Start date'
+                    size_hint_x: .1
+                FlatButton:
+                    text: 'Due date'
+                    size_hint_x: .1
+                FlatButton:
+                    text: 'Status'
+                    size_hint_x: .1
 
-        target_code = self.stocks.find_one({'product_code':pcode})
-        if target_code == None:
-            pass
-        else:
-            details = BoxLayout(size_hint_y=None,height=30,pos_hint={'top': 1})
-            products_container.add_widget(details)
+            BoxLayout:
+                id: product_inputs
+                size_hint_y: None
+                height: 30
+                spacing: 5
+                TextInput:
+                    id: no_inp
+                    size_hint_x: .05
+                TextInput:
+                    id: subj_inp
+                    size_hint_x: .2
+                    multiline: False
+                    on_text_validate: root.update_purchases()
+                TextInput:
+                    id: hw_inp
+                    size_hint_x: .45
+                TextInput:
+                    id: sdate_inp
+                    size_hint_x: .1
+                TextInput:
+                    id: ddate_inp
+                    size_hint_x: .1
+                TextInput:
+                    id: status_inp
+                    size_hint_x: .1
+            BoxLayout:
+                id: add_to_cart
+                orientation: 'vertical'
+                BoxLayout:
+                    size_hint_y: None
+                    height: 30
+                    canvas.before:
+                        Color:
+                            rgba: (.06, .45,.45, 1)
+                        Rectangle:
+                            size: self.size
+                            pos: self.pos
+                    Label:
+                        text: 'Code'
+                        size_hint_x: .2
+                    Label:
+                        text: 'Product name'
+                        size_hint_x: .3
+                    Label:
+                        text: 'Qty'
+                        size_hint_x: .1
+                    Label:
+                        text: 'Disc'
+                        size_hint_x: .1
+                    Label:
+                        text: 'Price'
+                        size_hint_x: .1
+                    Label:
+                        text: 'Product total'
+                        size_hint_x: .2
+                GridLayout:
+                    id: hw_list
+                    cols: 1
+                
 
-            code = Label(text=pcode,size_hint_x=.2,color=(.06,.45,.45,1))
-            name = Label(text=target_code['product_name'],size_hint_x=.3,color=(.06,.45,.45,1))
-            qty = Label(text='1',size_hint_x=.1,color=(.06,.45,.45,1))
-            disc = Label(text='0.00',size_hint_x=.1,color=(.06,.45,.45,1))
-            price = Label(text=target_code['product_price'],size_hint_x=.1,color=(.06,.45,.45,1))
-            total = Label(text='0.00',size_hint_x=.2,color=(.06,.45,.45,1))
-            details.add_widget(code)
-            details.add_widget(name)
-            details.add_widget(qty)
-            details.add_widget(disc)
-            details.add_widget(price)
-            details.add_widget(total)
 
-            #Update Preview
-            pname = name.text
-        
-            pprice = float(price.text)
-            pqty = str(1)
-            self.total += pprice
-            purchase_total = '`\n\nTotal\t\t\t\t\t\t\t\t'+str(self.total)
-            self.ids.cur_product.text = pname
-            self.ids.cur_price.text = str(pprice)
-            preview = self.ids.receipt_preview
-            prev_text = preview.text
-            _prev = prev_text.find('`')
-            if _prev > 0:
-                prev_text = prev_text[:_prev]
+        BoxLayout:
+            id: preview
+            orientation: 'vertical'
+            size_hint_x: .2
 
-            ptarget = -1
-            for i,c in enumerate(self.cart):
-                if c == pcode:
-                    ptarget = i
-
-            if ptarget >= 0:
-                pqty = self.qty[ptarget]+1
-                self.qty[ptarget] = pqty
-                expr = '%s\t\tx\d\t'%(pname)
-                rexpr = pname+'\t\tx'+str(pqty)+'\t'
-                nu_text = re.sub(expr,rexpr,prev_text)
-                preview.text = nu_text + purchase_total
-            else:
-                self.cart.append(pcode)
-                self.qty.append(1)
-                nu_preview = '\n'.join([prev_text,pname+'\t\tx'+pqty+'\t\t'+str(pprice),purchase_total])
-                preview.text = nu_preview
-
-            self.ids.disc_inp.text = '0.00'
-            self.ids.disc_perc_inp.text = '0'
-            self.ids.qty_inp.text = str(pqty)
-            self.ids.price_inp.text = str(pprice)
-            self.ids.vat_inp.text = '15%'
-            self.ids.total_inp.text = str(pprice)
-
-
-class OperatorApp(App):
-    def build(self):
-        return OperatorWindow()
-
-if __name__=="__main__":
-    oa = OperatorApp()
-    oa.run()
+            TextInput:
+                id: receipt_preview
+                readonly: True
+                text: 'Drop your files here'
+    BoxLayout:
+        id: footer
+        size_hint_y: None
+        height: 30
+        canvas.before:
+            Color:
+                rgba: (.06, .47, .47, 1)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: 'International Ala-Too University'
