@@ -5,5 +5,5 @@
 
 
 # Team members: Kerimbekov Erlan #
-# Askat kyzy Zharkyn #
-# Askat kyzy Nuraim #
+#               Askat kyzy Zharkyn #
+#               Askat kyzy Nuraim #
